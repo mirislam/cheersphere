@@ -55,7 +55,23 @@ export DYLD_FALLBACK_LIBRARY_PATH="/opt/homebrew/lib:$DYLD_FALLBACK_LIBRARY_PATH
 uvicorn app.main:app --reload
 ```
 
-The app will be available at `http://localhost:8000`.
+The app will be available at `http://localhost:8000`. And the Admin Dashboard is at `http://localhost:8000/dash`.
+
+### 4. (Optional) Add New Theme Categories & Images
+
+If you wish to download additional background images or add brand new event categories to the app, you can utilize the `download_pixabay.py` script!
+
+1. Sign up and get a free API Key from [Pixabay](https://pixabay.com/api/docs/).
+2. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+3. Open `.env` and replace `YOUR_API_KEY_HERE` with your actual Pixabay API key. You can customize the image count or edit the `PIXABAY_THEMES` JSON map to assign your own Pixabay search terms to new category names.
+4. Run the downloader:
+   ```bash
+   python download_pixabay.py
+   ```
+   *Note: If you invent completely new categories, remember to update the `THEMES` array in `app/main.py`, and link it to pastel CSS stylings mapped natively inside `app/templates/event.html` and `app/templates/pdf/event_pdf.html`!*
 
 ## 📂 Project Structure
 

@@ -1,0 +1,34 @@
+<div
+    class="bg-white border border-gray-200 overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition-shadow flex flex-col">
+    <a href="/event/{{ event.id }}" class="block flex-1">
+        {% if event.banner_url %}
+        <div class="h-32 w-full bg-cover bg-center" style="background-image: url('{{ event.banner_url }}');"></div>
+        {% else %}
+        <div class="h-32 w-full bg-indigo-100"></div>
+        {% endif %}
+        <div class="px-4 py-4 sm:px-6 bg-white relative">
+            <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-3">
+                <div class="flex flex-col">
+                    {% if event.image_path %}
+                    <img src="{{ event.image_path }}" alt=""
+                        class="w-12 h-12 rounded-full object-cover shadow border-2 border-white absolute -top-6">
+                    {% endif %}
+                    <p class="text-xl font-bold text-gray-900 truncate {% if event.image_path %}mt-6{% endif %}">{{
+                        event.title }}</p>
+                    <p class="text-sm text-gray-400 mt-1">{{ event.created_at.strftime('%b %d, %Y') }}</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">{{ event.description }}</p>
+            <div class="flex gap-2">
+                <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    {{ event.theme }}
+                </span>
+                <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    0 messages
+                </span>
+            </div>
+        </div>
+    </a>
+</div>

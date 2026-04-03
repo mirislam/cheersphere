@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white shadow overflow-hidden sm:rounded-md p-6 max-w-4xl mx-auto mt-8">
+    <div class="mb-6 border-b pb-4">
+        <h2 class="text-3xl font-semibold text-gray-800">Admin Dashboard</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Create new event Form -->
+        <div class="p-6 bg-indigo-50 border border-indigo-100 rounded-lg">
+            <h3 class="text-xl font-bold text-indigo-700 mb-4">Create New Event</h3>
+            <form action="/events" method="POST" enctype="multipart/form-data" class="space-y-4" autocomplete="off">
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Event Title</label>
+                    <input type="text" name="title" id="title" required
+                        class="mt-1 block py-2 px-3 border border-gray-300 w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" id="description" rows="3"
+                        class="mt-1 block py-2 px-3 border border-gray-300 w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                </div>
+                <div>
+                    <label for="theme" class="block text-sm font-medium text-gray-700">Theme</label>
+                    <select name="theme" id="theme"
+                        class="mt-1 block py-2 px-3 border border-gray-300 w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="General">General</option>
+                        <option value="Farewell">Farewell</option>
+                        <option value="Birthday">Birthday</option>
+                        <option value="Good Job">Good Job</option>
+                        <option value="Promotion">Promotion</option>
+                        <option value="Work Anniversary">Work Anniversary</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700">Person's Image (Optional)</label>
+                    <input type="file" name="image" id="image" accept="image/*"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+                <button type="submit"
+                    class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Create Event
+                </button>
+            </form>
+        </div>
+
+        <!-- Reset Database Form -->
+        <div class="p-6 bg-red-50 border border-red-100 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xl font-bold text-red-700">Danger Zone</h3>
+                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+            </div>
+            <p class="text-red-600 mb-4">Reset the database. This action is irreversible and deletes all events,
+                messages, and uploaded images.</p>
+            <form
+                onsubmit="return confirm('Are you sure you want to delete all events and messages? This action cannot be undone.');"
+                action="/api/reset-db" method="POST">
+                <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 w-full">
+                    Reset Database
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manage Existing Events List -->
+    <div class="mt-8 border-t pt-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Manage Events</h3>
+
+        {% if events %}
+        <div class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
+            <ul class="divide-y divide-gray-200">
+                {% for evt in events %}
+                <li class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center space-x-4 max-w-lg">
+                        {% if evt.image_path %}
+                        <img src="{{ evt.image_path }}"
+                            class="h-10 w-10 rounded-full object-cover shadow-sm border border-gray-300">
+                        {% else %}
+                        <div
+                            class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border border-indigo-200 shadow-sm">
+                            {{ evt.title[0]|upper }}</div>
+                        {% endif %}
+                        <div>
+                            <a href="/event/{{ evt.id }}"
+                                class="text-lg font-medium text-indigo-600 hover:text-indigo-900 border-b border-transparent hover:border-indigo-600 transition-colors">{{
+                                evt.title }}</a>
+                            <div class="flex items-center space-x-2 text-sm text-gray-500 mt-1">
+                                <span
+                                    class="bg-gray-100 px-2 py-0.5 rounded text-xs font-semibold text-gray-600 border border-gray-200">{{
+                                    evt.theme }}</span>
+                                <span>&bull;</span>
+                                <span>Created: {{ evt.created_at | pdt }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex items-center space-x-3">
+                        <a href="/event/{{ evt.id }}/export" target="_blank"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-sm">
+                            📄 Export PDF
+                        </a>
+                        <form
+                            onsubmit="return confirm('Are you sure you want to completely delete &quot;{{ evt.title | escape }}&quot;?');"
+                            action="/api/event/{{ evt.id }}/delete" method="POST">
+                            <button type="submit"
+                                class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors shadow-sm">
+                                <span class="mr-1">🗑</span> Delete
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p class="text-gray-500 italic bg-gray-50 p-6 rounded-lg text-center border shadow-inner">There are no currently
+            active events. Create one above to get started!</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
